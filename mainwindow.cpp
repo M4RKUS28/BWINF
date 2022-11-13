@@ -3,15 +3,18 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , selectedC(-1), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     wt = new WorkerThread();
     connect(wt, SIGNAL(finishedNewImg()), this, SLOT(finishedNewImg()));
     connect(wt, SIGNAL(finishedAllImages()), this, SLOT(finishedAllImages()));
+    connect(ui->widget, SIGNAL(startClicked(int)), this, SLOT(onStartC_clicked(int)));
 
     zI = nullptr;
     ui->widget->setFixedSize( QSize(ui->spinBoxW->value(), ui->spinBoxH->value()) );
+    ui->widget->setStyleSheet("background-color: rgb(255, 255, 255);");
+    qDebug() << QSize(ui->spinBoxW->value(), ui->spinBoxH->value());
 
 }
 
@@ -34,10 +37,12 @@ void MainWindow::on_pushButtonStart_clicked()
 
     zI = new ZinkImage(ui->spinBoxW->value(), ui->spinBoxH->value());
     ui->widget->setImage(zI);
-    int i = 10;
+    int i = 100;
     for(const auto & p : qAsConst(ui->widget->startPoints)) {
         i += 10;
         i %= 250;
+        if(i < 100)
+            i = 100;
         zI->addStartPoint(p, ui->spinBoxWachsttumsgeschwindigkeitUnten->value(), ui->spinBoxWachsttumsgeschwindigkeitOben->value(),
                           ui->spinBoxWachsttumsgeschwindigkeitRechts->value(), ui->spinBoxWachsttumsgeschwindigkeitLinks->value(),
                           QColor::fromRgb( i, i, i ) );
@@ -76,8 +81,8 @@ void MainWindow::on_spinBoxH_valueChanged(int arg1)
 
 void MainWindow::on_spinBoxWachsttumsgeschwindigkeitRechts_valueChanged(int arg1)
 {
-//    if(zI)
-//    zI->wR = ui->spinBoxWachsttumsgeschwindigkeitRechts->value();
+    if(zI && selectedC != -1)
+        zI->getPixelAt(ui->widget->startPoints.at(selectedC)).crystal->wR = ui->spinBoxWachsttumsgeschwindigkeitRechts->value();
 }
 
 
@@ -98,6 +103,20 @@ void MainWindow::on_spinBoxWachsttumsgeschwindigkeitOben_valueChanged(int arg1)
 void MainWindow::on_spinBoxWachsttumsgeschwindigkeitUnten_valueChanged(int arg1)
 {
 //    if(zI)
-//    zI->wU = ui->spinBoxWachsttumsgeschwindigkeitUnten->value();
+    //    zI->wU = ui->spinBoxWachsttumsgeschwindigkeitUnten->value();
 }
 
+void MainWindow::onStartC_clicked(int i)
+{
+    ui->groupBoxWG->setTitle( "Kristall " + QString::number(i));
+    if(zI)
+        ui->spinBoxWachsttumsgeschwindigkeitRechts->setValue( zI->getPixelAt( ui->widget->startPoints.at(i) ).crystal->wR  );
+    selectedC = i;
+}
+
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    ui->groupBoxWG->setTitle( "Default");
+    selectedC = -1;
+}

@@ -23,7 +23,7 @@ public:
 
     ZinkImage * zI;
     WorkerThread * wt;
-
+    int selectedC;
 
 
 private slots:
@@ -44,6 +44,8 @@ private slots:
 
     void on_spinBoxWachsttumsgeschwindigkeitUnten_valueChanged(int arg1);
 
+    void onStartC_clicked(int i);
+
 private:
     Ui::MainWindow *ui;
 
@@ -51,5 +53,11 @@ private:
 
 
 
+
+    // QWidget interface
+protected:
+    virtual void mousePressEvent(QMouseEvent *event);
 };
+
+
 #endif // MAINWINDOW_H

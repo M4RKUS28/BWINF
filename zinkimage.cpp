@@ -126,3 +126,11 @@ void ZinkImage::addStartPoint(QPoint p, int wU, int wO, int wR, int wL, QColor c
 
 
 }
+
+Pixel ZinkImage::getPixelAt(QPoint p)
+{
+    if(p.x() >= 0 && p.x() < size.width() && p.y() >= 0 && p.y() < size.height())
+        return this->imgMap[p.y()][p.x()];
+    else
+        return Pixel();
+}

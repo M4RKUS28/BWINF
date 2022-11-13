@@ -71,7 +71,7 @@ public:
 
     void addStartPoint(QPoint p, int wU, int wO, int wR, int wL, QColor color);
 
-
+    Pixel getPixelAt(QPoint p);
 private:
     QVector<Crystal*> crystals;
     QImage * image;

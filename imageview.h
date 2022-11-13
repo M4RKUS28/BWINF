@@ -20,7 +20,9 @@ private:
     ZinkImage * zImg;
     double hdpi_scale;
 
-//signals:
+signals:
+
+    void startClicked(int i);
 
 
     // QWidget interface
