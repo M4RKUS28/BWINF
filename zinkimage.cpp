@@ -9,8 +9,8 @@ ZinkImage::ZinkImage(int width, int height)
     : finished(false), iteration(0)
 {
     size = QSize(width, height);
-    mutexImg = new QMutex(QMutex::NonRecursive);
-    mutexMap = new QMutex(QMutex::NonRecursive);
+    mutexImg = new QMutex;
+    mutexMap = new QMutex;
 
     this->image = new QImage(width, height, QImage::Format_ARGB32_Premultiplied);
 
